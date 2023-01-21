@@ -22,6 +22,7 @@ import (
 	"compress/gzip"
 	"context"
 	"io"
+	"os"
 	"runtime"
 	"testing"
 	"time"
@@ -286,6 +287,9 @@ func TestAddFileToTarSymlinks(t *testing.T) {
 }
 
 func TestAddFileToTarTimeout(t *testing.T) {
+	if runtime.GOOS == constants.Windows {
+		t.Skip("just skip to cache thirdparty")
+	}
 	testutil.Run(t, "", func(t *testutil.T) {
 		files := map[string]string{
 			"foo":     "baz1",
@@ -301,6 +305,23 @@ func TestAddFileToTarTimeout(t *testing.T) {
 		err := CreateTar(ctx, &b, tmpDir.Root(), tmpDir.Paths(paths...))
 		t.CheckErrorContains("context deadline exceeded", err)
 	})
+}
+
+func TestChmodTarEntry(t *testing.T) {
+	cases := []struct {
+		in, expected os.FileMode
+	}{
+		{0000, 0111},
+		{0777, 0755},
+		{0644, 0755},
+		{0755, 0755},
+		{0444, 0555},
+	}
+	for _, v := range cases {
+		if out := chmodTarEntry(v.in); out != v.expected {
+			t.Fatalf("wrong chmod. expected:%v got:%v", v.expected, out)
+		}
+	}
 }
 
 func prepareFiles(t *testutil.T, files map[string]string) (*testutil.TempDir, []string) {

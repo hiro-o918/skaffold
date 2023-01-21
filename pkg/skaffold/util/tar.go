@@ -121,7 +121,7 @@ func addFileToTar(ctx context.Context, root string, src string, dst string, tw *
 		}
 
 		if filepath.IsAbs(target) {
-			log.Entry(context.TODO()).Warnf("Skipping %s. Only relative symlinks are supported.", src)
+			log.Entry(ctx).Warnf("Skipping %s. Only relative symlinks are supported.", src)
 			return nil
 		}
 
@@ -180,8 +180,9 @@ func addFileToTar(ctx context.Context, root string, src string, dst string, tw *
 		case err := <-errChan:
 			return err
 		}
+	} else {
+		panic(fmt.Sprintf("not implemented: %v", mode))
 	}
-
 	return nil
 }
 
