@@ -287,9 +287,6 @@ func TestAddFileToTarSymlinks(t *testing.T) {
 }
 
 func TestAddFileToTarTimeout(t *testing.T) {
-	if runtime.GOOS == constants.Windows {
-		t.Skip("just skip to cache thirdparty")
-	}
 	testutil.Run(t, "", func(t *testutil.T) {
 		files := map[string]string{
 			"foo":     "baz1",

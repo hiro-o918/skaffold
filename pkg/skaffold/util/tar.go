@@ -147,16 +147,20 @@ func addFileToTar(ctx context.Context, root string, src string, dst string, tw *
 		header.Name = filepath.ToSlash(dst)
 	}
 
+	log.Entry(ctx).Warn(fmt.Sprintf("before mode: %v", mode), mode.IsRegular())
 	// Code copied from https://github.com/moby/moby/blob/master/pkg/archive/archive_windows.go
 	if runtime.GOOS == constants.Windows {
 		header.Mode = int64(chmodTarEntry(os.FileMode(header.Mode)))
 	}
+	log.Entry(ctx).Warn(fmt.Sprintf("after mode: %v", mode), mode.IsRegular())
 	if hm != nil {
 		hm(header)
 	}
+	log.Entry(ctx).Warn(fmt.Sprintf("after hm: %v", mode), mode.IsRegular())
 	if err := tw.WriteHeader(header); err != nil {
 		return err
 	}
+	log.Entry(ctx).Warn(fmt.Sprintf("after write header: %v", mode), mode.IsRegular())
 
 	if mode.IsRegular() {
 		f, err := os.Open(src)
@@ -180,8 +184,6 @@ func addFileToTar(ctx context.Context, root string, src string, dst string, tw *
 		case err := <-errChan:
 			return err
 		}
-	} else {
-		panic(fmt.Sprintf("not implemented: %v", mode))
 	}
 	return nil
 }

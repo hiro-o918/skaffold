@@ -47,4 +47,4 @@ jobs:
       # TODO(aaron-prindle) skip unit tests for doc only changes on Windows.  Figure out the proper syntax, etc.
     - name: Run skaffold unit tests on windows
       run: |
-        go test -timeout 30s -run ^TestAddFileToTarSymlinks$ github.com/GoogleContainerTools/skaffold/v2/pkg/skaffold/util
+        go test -v -timeout 30s -run '^(TestCreateTar|TestCreateTarWithParents|TestCreateTarGz|TestCreateTarSubDirectory|TestCreateTarEmptyFolder|TestCreateTarWithAbsolutePaths|TestAddFileToTarSymlinks|TestAddFileToTarTimeout|TestChmodTarEntry)$' github.com/GoogleContainerTools/skaffold/v2/pkg/skaffold/util
