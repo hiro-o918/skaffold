@@ -53,7 +53,7 @@ func CreateTar(ctx context.Context, w io.Writer, root string, paths []string) er
 	defer tw.Close()
 
 	for _, path := range paths {
-		log.Entry(ctx).Debugf("Adding %s to tar", path)
+		log.Entry(ctx).Warnf("Adding %s to tar", path)
 		if err := addFileToTar(ctx, root, path, "", tw, nil); err != nil {
 			return err
 		}
